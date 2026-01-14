@@ -1,12 +1,12 @@
 <!doctype html>
 <html lang="id" class="h-full">
- <head>
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Digital Logbook Parameter Monitoring</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     body {
       box-sizing: border-box;
@@ -141,302 +141,458 @@
     }
   </style>
   <style>@view-transition { navigation: auto; }</style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
-  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
- </head>
- <body class="h-full gradient-bg text-white">
-  <div id="app" class="h-full flex flex-col overflow-auto scroll-container"><!-- Toast Container -->
-   <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2"></div><!-- Header -->
-   <header class="glass-card border-b border-white/10 px-4 py-4 sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto flex items-center justify-between">
-     <div class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-       </svg>
-      </div>
-      <div>
-       <h1 id="app-title" class="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Digital Logbook</h1>
-       <p class="text-xs text-gray-400">Parameter Monitoring System</p>
-      </div>
-     </div>
-     <div class="flex items-center gap-2">
-      <div class="pulse-dot w-2 h-2 rounded-full bg-green-400"></div><span class="text-xs text-gray-400" id="connection-status">Terhubung</span>
-     </div>
-    </div>
-   </header><!-- Navigation -->
-   <nav class="px-4 py-3 border-b border-white/5">
-    <div class="max-w-7xl mx-auto flex gap-2 overflow-x-auto"><button onclick="showPage('dashboard')" id="nav-dashboard" class="nav-item active px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap flex items-center gap-2">
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-      </svg> Dashboard </button> <button onclick="showPage('input')" id="nav-input" class="nav-item px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap flex items-center gap-2 bg-white/5">
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-      </svg> Input Data </button> <button onclick="showPage('manage')" id="nav-manage" class="nav-item px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap flex items-center gap-2 bg-white/5">
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-      </svg> Kelola Logbook </button>
-    </div>
-   </nav><!-- Main Content -->
-   <main class="flex-1 p-4 overflow-auto">
-    <div class="max-w-7xl mx-auto"><!-- Dashboard Page -->
-     <div id="page-dashboard" class="fade-in">
-      <div class="glass-card rounded-2xl p-6 mb-6">
-       <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
-        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-        </svg> Filter Data</h2>
-       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div><label for="filter-date" class="block text-xs text-gray-400 mb-1">Tanggal</label> <input type="date" id="filter-date" class="input-field w-full px-3 py-2 rounded-xl text-sm outline-none">
-        </div>
-        <div><label for="filter-process" class="block text-xs text-gray-400 mb-1">Proses</label> <select id="filter-process" class="input-field w-full px-3 py-2 rounded-xl text-sm outline-none"> <option value="">Semua Proses</option> <option value="Mixing">Mixing</option> <option value="Tabletting">Tabletting</option> <option value="Coating">Coating</option> <option value="Stripping">Stripping</option> </select>
-        </div>
-        <div><label for="filter-product" class="block text-xs text-gray-400 mb-1">Kode Produk</label> <input type="text" id="filter-product" placeholder="MASUKKAN KODE PRODUK" class="input-field w-full px-3 py-2 rounded-xl text-sm outline-none uppercase" oninput="this.value = this.value.toUpperCase()">
-        </div>
-        <div class="flex items-end"><button onclick="applyFilter()" class="btn-primary w-full px-4 py-2 rounded-xl text-sm font-medium flex items-center justify-center gap-2">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg> Terapkan Filter </button>
-        </div>
-       </div>
-      </div><!-- Stats Cards -->
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-       <div class="glass-card rounded-xl p-4">
-        <div class="flex items-center justify-between">
-         <div>
-          <p class="text-xs text-gray-400">Total Input</p>
-          <p id="stat-total" class="text-2xl font-bold text-blue-400">0</p>
-         </div>
-         <div class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
-          <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>
-         </div>
-        </div>
-       </div>
-       <div class="glass-card rounded-xl p-4">
-        <div class="flex items-center justify-between">
-         <div>
-          <p class="text-xs text-gray-400">Hari Ini</p>
-          <p id="stat-today" class="text-2xl font-bold text-green-400">0</p>
-         </div>
-         <div class="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
-          <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
-         </div>
-        </div>
-       </div>
-       <div class="glass-card rounded-xl p-4">
-        <div class="flex items-center justify-between">
-         <div>
-          <p class="text-xs text-gray-400">Total Mesin</p>
-          <p id="stat-machines" class="text-2xl font-bold text-purple-400">0</p>
-         </div>
-         <div class="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
-          <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-          </svg>
-         </div>
-        </div>
-       </div>
-       <div class="glass-card rounded-xl p-4">
-        <div class="flex items-center justify-between">
-         <div>
-          <p class="text-xs text-gray-400">Parameter</p>
-          <p id="stat-params" class="text-2xl font-bold text-orange-400">0</p>
-         </div>
-         <div class="w-10 h-10 rounded-lg bg-orange-500/20 flex items-center justify-center">
-          <svg class="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-          </svg>
-         </div>
-        </div>
-       </div>
-      </div><!-- Data Table -->
-      <div class="glass-card rounded-2xl overflow-hidden">
-       <div class="p-4 border-b border-white/10 flex items-center justify-between">
-        <h2 class="text-lg font-semibold flex items-center gap-2">
-         <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-         </svg> Riwayat Input Parameter</h2><button onclick="refreshDashboard()" class="text-xs text-gray-400 hover:text-white flex items-center gap-1">
-         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-         </svg> Refresh </button>
-       </div>
-       <div class="overflow-x-auto">
-        <table class="w-full text-sm">
-         <thead>
-          <tr class="text-left text-gray-400 border-b border-white/10">
-           <th class="px-4 py-3 font-medium">Tanggal</th>
-           <th class="px-4 py-3 font-medium">PIC</th>
-           <th class="px-4 py-3 font-medium">Proses</th>
-           <th class="px-4 py-3 font-medium">Mesin</th>
-           <th class="px-4 py-3 font-medium">Kode Produk</th>
-           <th class="px-4 py-3 font-medium">Parameter</th>
-          </tr>
-         </thead>
-         <tbody id="dashboard-table-body">
-          <tr>
-           <td colspan="6" class="px-4 py-8 text-center text-gray-400">
-            <div class="flex flex-col items-center gap-2">
-             <svg class="w-12 h-12 text-gray-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-             </svg>
-             <p>Belum ada data. Gunakan filter untuk mencari.</p>
-            </div></td>
-          </tr>
-         </tbody>
-        </table>
-       </div>
-      </div>
-     </div><!-- Input Page -->
-     <div id="page-input" class="fade-in hidden">
-      <div class="glass-card rounded-2xl p-6">
-       <h2 class="text-lg font-semibold mb-6 flex items-center gap-2">
-        <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-        </svg> Input Data Parameter</h2>
-       <div class="space-y-6">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-         <div><label for="input-pic" class="block text-sm text-gray-400 mb-2">Inisial PIC <span class="text-red-400">*</span></label> <input type="text" id="input-pic" placeholder="Contoh: JD" maxlength="5" class="input-field w-full px-4 py-3 rounded-xl outline-none uppercase" oninput="this.value = this.value.toUpperCase()">
-         </div>
-         <div><label for="input-product" class="block text-sm text-gray-400 mb-2">Kode Produk <span class="text-red-400">*</span></label> <input type="text" id="input-product" placeholder="MASUKKAN KODE PRODUK" class="input-field w-full px-4 py-3 rounded-xl outline-none uppercase" oninput="this.value = this.value.toUpperCase()">
-         </div>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-         <div><label for="input-process" class="block text-sm text-gray-400 mb-2">Proses <span class="text-red-400">*</span></label> <select id="input-process" onchange="loadMachinesForInput()" class="input-field w-full px-4 py-3 rounded-xl outline-none"> <option value="">Pilih Proses</option> <option value="Mixing">Mixing</option> <option value="Tabletting">Tabletting</option> <option value="Coating">Coating</option> <option value="Stripping">Stripping</option> </select>
-         </div>
-         <div><label for="input-machine" class="block text-sm text-gray-400 mb-2">Nama Mesin <span class="text-red-400">*</span></label> <select id="input-machine" onchange="loadParametersForInput()" class="input-field w-full px-4 py-3 rounded-xl outline-none" disabled> <option value="">Pilih proses terlebih dahulu</option> </select>
-         </div>
-        </div><!-- Parameters Container -->
-        <div id="parameters-container" class="hidden">
-         <div class="flex items-center gap-2 mb-4">
-          <svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-          </svg>
-          <h3 class="text-md font-medium">Parameter Input</h3>
-         </div>
-         <div id="parameters-list" class="space-y-3"><!-- Parameters will be loaded here -->
-         </div>
-        </div>
-        <div id="no-params-message" class="hidden glass-card rounded-xl p-6 text-center">
-         <svg class="w-12 h-12 text-gray-600 mx-auto mb-2" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-         </svg>
-         <p class="text-gray-400">Tidak ada parameter untuk mesin ini. Silakan tambahkan parameter di menu Kelola Logbook.</p>
-        </div><button onclick="saveInputData()" id="btn-save-input" class="btn-secondary w-full py-3 rounded-xl font-medium flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-         </svg><span id="btn-save-input-text">Simpan Input</span> </button>
-       </div>
-      </div>
-     </div><!-- Manage Page -->
-     <div id="page-manage" class="fade-in hidden"><!-- Admin Login -->
-      <div id="admin-login" class="glass-card rounded-2xl p-6 max-w-md mx-auto">
-       <div class="text-center mb-6">
-        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center mx-auto mb-4">
-         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-         </svg>
-        </div>
-        <h2 class="text-xl font-bold">Login Admin</h2>
-        <p class="text-sm text-gray-400 mt-1">Masukkan password untuk mengakses</p>
-       </div>
-       <div class="space-y-4">
-        <div><label for="admin-password" class="block text-sm text-gray-400 mb-2">Password</label> <input type="password" id="admin-password" placeholder="Masukkan password" class="input-field w-full px-4 py-3 rounded-xl outline-none">
-        </div>
-        <div id="login-error" class="hidden text-red-400 text-sm text-center bg-red-500/10 rounded-lg py-2">
-         Password salah. Silakan coba lagi.
-        </div><button onclick="adminLogin()" class="btn-primary w-full py-3 rounded-xl font-medium"> Login </button>
-       </div>
-      </div><!-- Admin Panel -->
-      <div id="admin-panel" class="hidden space-y-6">
-       <div class="flex items-center justify-between">
-        <h2 class="text-lg font-semibold flex items-center gap-2">
-         <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-         </svg> Kelola Logbook</h2><button onclick="adminLogout()" class="text-sm text-gray-400 hover:text-white flex items-center gap-1">
-         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-         </svg> Logout </button>
-       </div><!-- Add Machine Form -->
-       <div class="glass-card rounded-2xl p-6">
-        <h3 class="text-md font-medium mb-4 flex items-center gap-2">
-         <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-         </svg> Tambah Mesin &amp; Parameter Baru</h3>
-        <div class="space-y-4">
-         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div><label for="manage-machine" class="block text-sm text-gray-400 mb-2">Nama Mesin <span class="text-red-400">*</span></label> <input type="text" id="manage-machine" placeholder="Contoh: MESIN MIXER A1" class="input-field w-full px-4 py-3 rounded-xl outline-none uppercase" oninput="this.value = this.value.toUpperCase()">
+</head>
+<body class="h-full gradient-bg text-white">
+  <div id="app" class="h-full flex flex-col overflow-auto scroll-container">
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2"></div>
+    
+    <!-- Header -->
+    <header class="glass-card border-b border-white/10 px-4 py-4 sticky top-0 z-40">
+      <div class="max-w-7xl mx-auto flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
           </div>
-          <div><label for="manage-process" class="block text-sm text-gray-400 mb-2">Proses <span class="text-red-400">*</span></label> <select id="manage-process" class="input-field w-full px-4 py-3 rounded-xl outline-none"> <option value="">Pilih Proses</option> <option value="Mixing">Mixing</option> <option value="Tabletting">Tabletting</option> <option value="Coating">Coating</option> <option value="Stripping">Stripping</option> </select>
+          <div>
+            <h1 id="app-title" class="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Digital Logbook</h1>
+            <p class="text-xs text-gray-400">Parameter Monitoring System</p>
           </div>
-         </div>
-         <div>
-          <div class="flex items-center justify-between mb-2"><label class="text-sm text-gray-400">Parameter (Opsional)</label> <button onclick="addParameterField()" class="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1">
-            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-            </svg> Tambah Parameter </button>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="pulse-dot w-2 h-2 rounded-full bg-green-400"></div>
+          <span class="text-xs text-gray-400" id="connection-status">Terhubung</span>
+        </div>
+      </div>
+    </header>
+    
+    <!-- Navigation -->
+    <nav class="px-4 py-3 border-b border-white/5">
+      <div class="max-w-7xl mx-auto flex gap-2 overflow-x-auto">
+        <button onclick="showPage('dashboard')" id="nav-dashboard" class="nav-item active px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+          </svg> Dashboard
+        </button>
+        <button onclick="showPage('input')" id="nav-input" class="nav-item px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap flex items-center gap-2 bg-white/5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg> Input Data
+        </button>
+        <button onclick="showPage('manage')" id="nav-manage" class="nav-item px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap flex items-center gap-2 bg-white/5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg> Kelola Logbook
+        </button>
+      </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main class="flex-1 p-4 overflow-auto">
+      <div class="max-w-7xl mx-auto">
+        <!-- Dashboard Page -->
+        <div id="page-dashboard" class="fade-in">
+          <div class="glass-card rounded-2xl p-6 mb-6">
+            <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+              <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+              </svg> Filter Data
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div>
+                <label for="filter-process" class="block text-xs text-gray-400 mb-1">Proses</label>
+                <select id="filter-process" class="input-field w-full px-3 py-2 rounded-xl text-sm outline-none">
+                  <option value="">Semua Proses</option>
+                  <option value="Mixing">Mixing</option>
+                  <option value="Tabletting">Tabletting</option>
+                  <option value="Coating">Coating</option>
+                  <option value="Stripping">Stripping</option>
+                </select>
+              </div>
+              <div>
+                <label for="filter-product" class="block text-xs text-gray-400 mb-1">Kode Produk</label>
+                <input type="text" id="filter-product" placeholder="MASUKKAN KODE PRODUK" class="input-field w-full px-3 py-2 rounded-xl text-sm outline-none uppercase" oninput="this.value = this.value.toUpperCase()">
+              </div>
+              <div class="flex items-end">
+                <button onclick="applyFilter()" class="btn-primary w-full px-4 py-2 rounded-xl text-sm font-medium flex items-center justify-center gap-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg> Terapkan Filter
+                </button>
+              </div>
+            </div>
           </div>
-          <div id="parameter-fields" class="space-y-2"><!-- Parameter fields will be added here -->
+          
+          <!-- Stats Cards -->
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="glass-card rounded-xl p-4">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-xs text-gray-400">Total Input</p>
+                  <p id="stat-total" class="text-2xl font-bold text-blue-400">0</p>
+                </div>
+                <div class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                  <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div class="glass-card rounded-xl p-4">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-xs text-gray-400">Hari Ini</p>
+                  <p id="stat-today" class="text-2xl font-bold text-green-400">0</p>
+                </div>
+                <div class="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
+                  <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div class="glass-card rounded-xl p-4">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-xs text-gray-400">Total Mesin</p>
+                  <p id="stat-machines" class="text-2xl font-bold text-purple-400">0</p>
+                </div>
+                <div class="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                  <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div class="glass-card rounded-xl p-4">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-xs text-gray-400">Parameter</p>
+                  <p id="stat-params" class="text-2xl font-bold text-orange-400">0</p>
+                </div>
+                <div class="w-10 h-10 rounded-lg bg-orange-500/20 flex items-center justify-center">
+                  <svg class="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                  </svg>
+                </div>
+              </div>
+            </div>
           </div>
-          <p class="text-xs text-gray-500 mt-2">Klik "Tambah Parameter" untuk menambahkan parameter baru. Parameter bersifat opsional.</p>
-         </div><button onclick="saveMachineConfig()" id="btn-save-config" class="btn-secondary w-full py-3 rounded-xl font-medium flex items-center justify-center gap-2">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-          </svg><span id="btn-save-config-text">Simpan Konfigurasi</span> </button>
+          
+          <!-- Data Table -->
+          <div class="glass-card rounded-2xl overflow-hidden">
+            <div class="p-4 border-b border-white/10 flex items-center justify-between">
+              <h2 class="text-lg font-semibold flex items-center gap-2">
+                <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                </svg> Riwayat Input Parameter
+              </h2>
+              <button onclick="refreshDashboard()" class="text-xs text-gray-400 hover:text-white flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg> Refresh
+              </button>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="text-left text-gray-400 border-b border-white/10">
+                    <th class="px-4 py-3 font-medium">Tanggal</th>
+                    <th class="px-4 py-3 font-medium">PIC</th>
+                    <th class="px-4 py-3 font-medium">Proses</th>
+                    <th class="px-4 py-3 font-medium">Mesin</th>
+                    <th class="px-4 py-3 font-medium">Kode Produk</th>
+                    <th class="px-4 py-3 font-medium">Parameter</th>
+                  </tr>
+                </thead>
+                <tbody id="dashboard-table-body">
+                  <tr>
+                    <td colspan="6" class="px-4 py-8 text-center text-gray-400">
+                      <div class="flex flex-col items-center gap-2">
+                        <svg class="w-12 h-12 text-gray-600" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <p>Belum ada data. Gunakan filter untuk mencari.</p>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
-       </div><!-- Existing Machines -->
-       <div class="glass-card rounded-2xl overflow-hidden">
-        <div class="p-4 border-b border-white/10 flex items-center justify-between">
-         <h3 class="text-md font-medium flex items-center gap-2">
-          <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-          </svg> Daftar Mesin Terdaftar</h3><button onclick="loadMachinesList()" class="text-xs text-gray-400 hover:text-white flex items-center gap-1">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg> Refresh </button>
+        
+        <!-- Input Page -->
+        <div id="page-input" class="fade-in hidden">
+          <div class="glass-card rounded-2xl p-6">
+            <h2 class="text-lg font-semibold mb-6 flex items-center gap-2">
+              <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              </svg> Input Data Parameter
+            </h2>
+            <div class="space-y-6">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label for="input-pic" class="block text-sm text-gray-400 mb-2">Inisial PIC <span class="text-red-400">*</span></label>
+                  <input type="text" id="input-pic" placeholder="Contoh: JD" maxlength="5" class="input-field w-full px-4 py-3 rounded-xl outline-none uppercase" oninput="this.value = this.value.toUpperCase()">
+                </div>
+                <div>
+                  <label for="input-product" class="block text-sm text-gray-400 mb-2">Kode Produk <span class="text-red-400">*</span></label>
+                  <input type="text" id="input-product" placeholder="MASUKKAN KODE PRODUK" class="input-field w-full px-4 py-3 rounded-xl outline-none uppercase" oninput="this.value = this.value.toUpperCase()">
+                </div>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label for="input-process" class="block text-sm text-gray-400 mb-2">Proses <span class="text-red-400">*</span></label>
+                  <select id="input-process" onchange="loadMachinesForInput()" class="input-field w-full px-4 py-3 rounded-xl outline-none">
+                    <option value="">Pilih Proses</option>
+                    <option value="Mixing">Mixing</option>
+                    <option value="Tabletting">Tabletting</option>
+                    <option value="Coating">Coating</option>
+                    <option value="Stripping">Stripping</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="input-machine" class="block text-sm text-gray-400 mb-2">Nama Mesin <span class="text-red-400">*</span></label>
+                  <select id="input-machine" onchange="loadParametersForInput()" class="input-field w-full px-4 py-3 rounded-xl outline-none" disabled>
+                    <option value="">Pilih proses terlebih dahulu</option>
+                  </select>
+                </div>
+              </div>
+              
+              <!-- Parameters Container -->
+              <div id="parameters-container" class="hidden">
+                <div class="flex items-center gap-2 mb-4">
+                  <svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                  <h3 class="text-md font-medium">Parameter Input</h3>
+                </div>
+                <div id="parameters-list" class="space-y-3">
+                  <!-- Parameters will be loaded here -->
+                </div>
+              </div>
+              
+              <div id="no-params-message" class="hidden glass-card rounded-xl p-6 text-center">
+                <svg class="w-12 h-12 text-gray-600 mx-auto mb-2" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <p class="text-gray-400">Tidak ada parameter untuk mesin ini. Silakan tambahkan parameter di menu Kelola Logbook.</p>
+              </div>
+              
+              <button onclick="saveInputData()" id="btn-save-input" class="btn-secondary w-full py-3 rounded-xl font-medium flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span id="btn-save-input-text">Simpan Input</span>
+              </button>
+            </div>
+          </div>
         </div>
-        <div id="machines-list" class="max-h-96 overflow-y-auto scroll-container">
-         <div class="p-8 text-center text-gray-400">
-          <svg class="w-12 h-12 text-gray-600 mx-auto mb-2" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-          </svg>
-          <p>Memuat data mesin...</p>
-         </div>
+        
+        <!-- Manage Page -->
+        <div id="page-manage" class="fade-in hidden">
+          <!-- Admin Login -->
+          <div id="admin-login" class="glass-card rounded-2xl p-6 max-w-md mx-auto">
+            <div class="text-center mb-6">
+              <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <h2 class="text-xl font-bold">Login Admin</h2>
+              <p class="text-sm text-gray-400 mt-1">Masukkan password untuk mengakses</p>
+            </div>
+            <div class="space-y-4">
+              <div>
+                <label for="admin-password" class="block text-sm text-gray-400 mb-2">Password</label>
+                <input type="password" id="admin-password" placeholder="Masukkan password" class="input-field w-full px-4 py-3 rounded-xl outline-none">
+              </div>
+              <div id="login-error" class="hidden text-red-400 text-sm text-center bg-red-500/10 rounded-lg py-2">
+                Password salah. Silakan coba lagi.
+              </div>
+              <button onclick="adminLogin()" class="btn-primary w-full py-3 rounded-xl font-medium">Login</button>
+            </div>
+          </div>
+          
+          <!-- Admin Panel -->
+          <div id="admin-panel" class="hidden space-y-6">
+            <div class="flex items-center justify-between">
+              <h2 class="text-lg font-semibold flex items-center gap-2">
+                <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg> Kelola Logbook
+              </h2>
+              <button onclick="adminLogout()" class="text-sm text-gray-400 hover:text-white flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg> Logout
+              </button>
+            </div>
+            
+            <!-- Add Machine Form -->
+            <div class="glass-card rounded-2xl p-6">
+              <h3 class="text-md font-medium mb-4 flex items-center gap-2">
+                <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg> Tambah Mesin & Parameter Baru
+              </h3>
+              <div class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label for="manage-machine" class="block text-sm text-gray-400 mb-2">Nama Mesin <span class="text-red-400">*</span></label>
+                    <input type="text" id="manage-machine" placeholder="Contoh: MESIN MIXER A1" class="input-field w-full px-4 py-3 rounded-xl outline-none uppercase" oninput="this.value = this.value.toUpperCase()">
+                  </div>
+                  <div>
+                    <label for="manage-process" class="block text-sm text-gray-400 mb-2">Proses <span class="text-red-400">*</span></label>
+                    <select id="manage-process" class="input-field w-full px-4 py-3 rounded-xl outline-none">
+                      <option value="">Pilih Proses</option>
+                      <option value="Mixing">Mixing</option>
+                      <option value="Tabletting">Tabletting</option>
+                      <option value="Coating">Coating</option>
+                      <option value="Stripping">Stripping</option>
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <label class="text-sm text-gray-400">Parameter (Opsional)</label>
+                    <button onclick="addParameterField()" class="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1">
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                      </svg> Tambah Parameter
+                    </button>
+                  </div>
+                  <div id="parameter-fields" class="space-y-2">
+                    <!-- Parameter fields will be added here -->
+                  </div>
+                  <p class="text-xs text-gray-500 mt-2">Klik "Tambah Parameter" untuk menambahkan parameter baru. Parameter bersifat opsional.</p>
+                </div>
+                <button onclick="saveMachineConfig()" id="btn-save-config" class="btn-secondary w-full py-3 rounded-xl font-medium flex items-center justify-center gap-2">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span id="btn-save-config-text">Simpan Konfigurasi</span>
+                </button>
+              </div>
+            </div>
+            
+            <!-- Existing Machines -->
+            <div class="glass-card rounded-2xl overflow-hidden">
+              <div class="p-4 border-b border-white/10 flex items-center justify-between">
+                <h3 class="text-md font-medium flex items-center gap-2">
+                  <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                  </svg> Daftar Mesin Terdaftar
+                </h3>
+                <button onclick="loadMachinesList()" class="text-xs text-gray-400 hover:text-white flex items-center gap-1">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg> Refresh
+                </button>
+              </div>
+              <div id="machines-list" class="max-h-96 overflow-y-auto scroll-container">
+                <div class="p-8 text-center text-gray-400">
+                  <svg class="w-12 h-12 text-gray-600 mx-auto mb-2" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                  </svg>
+                  <p>Memuat data mesin...</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-       </div>
       </div>
-     </div>
+    </main>
+    
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="fixed inset-0 z-50 hidden">
+      <div class="modal-overlay absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+      <div class="relative h-full flex items-center justify-center p-4">
+        <div class="glass-card rounded-2xl p-6 max-w-sm w-full">
+          <div class="text-center mb-4">
+            <div class="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center mx-auto mb-3">
+              <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold">Hapus Mesin?</h3>
+            <p id="delete-modal-text" class="text-sm text-gray-400 mt-1">Mesin ini akan dihapus permanen.</p>
+          </div>
+          <div class="flex gap-3">
+            <button onclick="closeDeleteModal()" class="flex-1 py-2 rounded-xl bg-white/10 hover:bg-white/20 transition font-medium">Batal</button>
+            <button onclick="confirmDelete()" id="btn-confirm-delete" class="flex-1 py-2 rounded-xl btn-danger font-medium">Hapus</button>
+          </div>
+        </div>
+      </div>
     </div>
-   </main><!-- Delete Confirmation Modal -->
-   <div id="delete-modal" class="fixed inset-0 z-50 hidden">
-    <div class="modal-overlay absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
-    <div class="relative h-full flex items-center justify-center p-4">
-     <div class="glass-card rounded-2xl p-6 max-w-sm w-full">
-      <div class="text-center mb-4">
-       <div class="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center mx-auto mb-3">
-        <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-        </svg>
-       </div>
-       <h3 class="text-lg font-semibold">Hapus Mesin?</h3>
-       <p id="delete-modal-text" class="text-sm text-gray-400 mt-1">Mesin ini akan dihapus permanen.</p>
+    
+    <!-- Edit Machine Modal -->
+    <div id="edit-modal" class="fixed inset-0 z-50 hidden">
+      <div class="modal-overlay absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeEditModal()"></div>
+      <div class="relative h-full flex items-center justify-center p-4 overflow-auto">
+        <div class="glass-card rounded-2xl p-6 max-w-2xl w-full my-8">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-semibold flex items-center gap-2">
+              <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg> Edit Mesin & Parameter
+            </h3>
+            <button onclick="closeEditModal()" class="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center transition">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <div class="space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="edit-machine-name" class="block text-sm text-gray-400 mb-2">Nama Mesin <span class="text-red-400">*</span></label>
+                <input type="text" id="edit-machine-name" placeholder="CONTOH: MESIN MIXER A1" class="input-field w-full px-4 py-3 rounded-xl outline-none uppercase" oninput="this.value = this.value.toUpperCase()">
+              </div>
+              <div>
+                <label for="edit-machine-process" class="block text-sm text-gray-400 mb-2">Proses <span class="text-red-400">*</span></label>
+                <select id="edit-machine-process" class="input-field w-full px-4 py-3 rounded-xl outline-none">
+                  <option value="">Pilih Proses</option>
+                  <option value="Mixing">Mixing</option>
+                  <option value="Tabletting">Tabletting</option>
+                  <option value="Coating">Coating</option>
+                  <option value="Stripping">Stripping</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <label class="text-sm text-gray-400">Parameter</label>
+                <button onclick="addEditParameterField()" class="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1">
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                  </svg> Tambah Parameter
+                </button>
+              </div>
+              <div id="edit-parameter-fields" class="space-y-2">
+                <!-- Parameter fields will be added here -->
+              </div>
+            </div>
+            <div class="flex gap-3 pt-2">
+              <button onclick="closeEditModal()" class="flex-1 py-3 rounded-xl bg-white/10 hover:bg-white/20 transition font-medium">Batal</button>
+              <button onclick="saveEditMachine()" id="btn-save-edit" class="flex-1 py-3 rounded-xl btn-secondary font-medium flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span id="btn-save-edit-text">Simpan Perubahan</span>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="flex gap-3"><button onclick="closeDeleteModal()" class="flex-1 py-2 rounded-xl bg-white/10 hover:bg-white/20 transition font-medium"> Batal </button> <button onclick="confirmDelete()" id="btn-confirm-delete" class="flex-1 py-2 rounded-xl btn-danger font-medium"> Hapus </button>
-      </div>
-     </div>
     </div>
-   </div><!-- Edit Machine Modal -->
-   <div id="edit-modal" class="fixed inset-0 z-50 hidden">
-    <div class="modal-overlay absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeEditModal()"></div>
-    <div class="relative h-full flex items-center justify-center p-4 overflow-auto">
-     <div class="glass-card rounded-2xl p-6 max-w-2xl w-full my-8">
-      <div class="flex items-center justify-between mb-6">
-       <h3 class="text-lg font-semibold flex items-center gap-2">
-        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-        </svg> Edit Mesin &amp; Parameter</h3><button onclick="closeEditModal()" class="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center transition">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-        </svg></button>
-      </div>
-      <div class="space-y-4">
-       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div><label for="edit-machine-name" class="block text-sm text-gray-400 mb-2">Nama Mesin <span class="text-red-400">*</span></label> <input type="text" id="edit-machine-name" placeholder="CONTOH: MESIN MIXER A1" class="input-field w-full px-4 py-3 rounded-xl outline-none uppercase" oninput="this.value = this.value.toUpperCase()">
-        </div>
-        <div><label for="edit-machine-process" class="block text-sm text-gray-400 mb-2">Proses <span class="text-red-400">*</span></label> <select id="edit-machine-process" class="input-field w-full px-4 py-3 rounded-xl outline-none"> <option value="">Pilih Proses</option> <option value="Mixing">Mixing</option> <option value="Tabletting">Tabletting</option> <option value="Coating">Coating</option> <option value="Stripping">Stripping</option> </select>
-        </div>
-       </div>
-       <div>
-        <div class="flex items-center justify-between mb-2"><label class="text-sm text-gray-400">Parameter</label> <button onclick="addEditParameterField()" class="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1">
-          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-          </svg> Tambah Parameter </button>
-        </div>
-        <div id="edit-parameter-fields" class="space-y-2"><!-- Parameter fields will be added here -->
-        </div>
-       </div>
-       <div class="flex gap-3 pt-2"><button onclick="closeEditModal()" class="flex-1 py-3 rounded-xl bg-white/10 hover:bg-white/20 transition font-medium"> Batal </button> <button onclick="saveEditMachine()" id="btn-save-edit" class="flex-1 py-3 rounded-xl btn-secondary font-medium flex items-center justify-center gap-2">
-         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-         </svg><span id="btn-save-edit-text">Simpan Perubahan</span> </button>
-       </div>
-      </div>
-     </div>
-    </div>
-   </div>
   </div>
+
   <script>
     // ==================== GLOBAL STATE ====================
     let supabaseClient = null;
@@ -727,7 +883,6 @@ CREATE INDEX idx_input_logs_process ON input_logs(process);
       if (isConnected && supabaseClient) {
         try {
           let query = supabaseClient.from('input_logs').select('*');
-          if (filters.date) query = query.eq('date', filters.date);
           if (filters.process) query = query.eq('process', filters.process);
           if (filters.product_code) query = query.ilike('product_code', `%${filters.product_code}%`);
           const { data, error } = await query.order('created_at', { ascending: false });
@@ -740,7 +895,6 @@ CREATE INDEX idx_input_logs_process ON input_logs(process);
         }
       } else {
         let logs = getLocalData('input_logs');
-        if (filters.date) logs = logs.filter(l => l.date === filters.date);
         if (filters.process) logs = logs.filter(l => l.process === filters.process);
         if (filters.product_code) logs = logs.filter(l => l.product_code.toLowerCase().includes(filters.product_code.toLowerCase()));
         return logs;
@@ -793,12 +947,10 @@ CREATE INDEX idx_input_logs_process ON input_logs(process);
     }
     
     async function applyFilter() {
-      const date = document.getElementById('filter-date').value;
       const process = document.getElementById('filter-process').value;
       const product = document.getElementById('filter-product').value;
       
       const filters = {};
-      if (date) filters.date = date;
       if (process) filters.process = process;
       if (product) filters.product_code = product;
       
@@ -1340,9 +1492,6 @@ CREATE INDEX idx_input_logs_process ON input_logs(process);
       // Initialize Supabase
       await initSupabase();
       
-      // Set today's date as default filter
-      document.getElementById('filter-date').valueAsDate = new Date();
-      
       // Load initial data
       await refreshDashboard();
       
@@ -1359,5 +1508,5 @@ CREATE INDEX idx_input_logs_process ON input_logs(process);
       init();
     }
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9bd15c2341636e7c',t:'MTc2ODI3MDI1NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
