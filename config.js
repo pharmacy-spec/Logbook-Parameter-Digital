@@ -1,0 +1,3 @@
+SUPABASE_URL = 'https://qlpqholxostzwyuxcnvq.supabase.co';
+SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFscHFob2x4b3N0end5dXhjbnZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgzMzI4ODQsImV4cCI6MjA4MzkwODg4NH0.ljUw-6vkkZO_4NHeFl9KzPNnhq-bm_3i047IOS-QtAQ';
+ADMIN_PASSWORD = 'admin123';
