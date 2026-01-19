@@ -604,17 +604,11 @@
     let parameterCounter = 0;
     let editParameterCounter = 0;
     
-// Credentials akan dimuat dari file terpisah
-// File: config.js (tidak di-push ke GitHub)
-let SUPABASE_URL, SUPABASE_ANON_KEY, ADMIN_PASSWORD;
-
-// Load config
-async function loadConfig() {
-  const response = await fetch('config.js');
-  const configText = await response.text();
-  // Eksekusi config.js
-  eval(configText);
-}
+    // ==================== SUPABASE CONFIGURATION ====================
+    // PENTING: Ganti dengan kredensial Supabase Anda
+    const SUPABASE_URL = 'https://qlpqholxostzwyuxcnvq.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFscHFob2x4b3N0end5dXhjbnZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgzMzI4ODQsImV4cCI6MjA4MzkwODg4NH0.ljUw-6vkkZO_4NHeFl9KzPNnhq-bm_3i047IOS-QtAQ';
+    const ADMIN_PASSWORD = 'admin123';
     
     // ==================== UI FUNCTIONS ====================
     function showPage(page) {
